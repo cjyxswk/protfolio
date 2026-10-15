@@ -1,8 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
 import { ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react'
 import { worksGallery } from '../data/worksGallery'
-import { projectBySlug } from '../data/portfolio'
 import { site } from '../data/site'
+import { MoreWorksFolder } from './MoreWorksFolder'
+import { createGalleryWheelGesture, galleryDragTarget } from '../utils/galleryGesture'
+import { ProjectModal } from './ProjectModal'
 
 const clamp = (value:number, min=0, max=1) => Math.min(max, Math.max(min,value))
 const last = worksGallery.length - 1
@@ -12,11 +14,10 @@ const relative = (value:number) => wrap(value+count/2)-count/2
 // Native touch scrolling uses buffered copies; only the middle set is exposed
 // to assistive technology. Desktop renders the seven originals on a wrapped arc.
 const railItems = Array.from({length:3},(_,copy)=>worksGallery.map((work,i)=>({work,i,copy}))).flat()
-const caseHref = (slug:string) => projectBySlug(slug) ? `/projects/${slug}` : undefined
 
 /** Independent looping cylindrical wall, not React Bits Pro source.
- * Vertical scrolling belongs to the page. Autoplay yields to hover and stops
- * after manual interaction; RAF only runs during bounded transitions.
+ * Vertical scrolling belongs to the page. Each gesture advances one item;
+ * autoplay resumes after manual interaction. RAF runs only during transitions.
  */
 export function WorksGallery() {
   const track = useRef<HTMLDivElement>(null)
@@ -28,6 +29,14 @@ export function WorksGallery() {
   const [index, setIndex] = useState(0)
   const selectRef = useRef<(next:number,increment?:boolean)=>void>(()=>{})
   const suppressClick = useRef(0)
+  const modalOpen = useRef(false)
+  const modalResumeAt = useRef(0)
+  const [selectedWork, setSelectedWork] = useState<number | null>(null)
+  const closeProject = useCallback(() => {
+    modalOpen.current = false
+    modalResumeAt.current = performance.now() + 5000
+    setSelectedWork(null)
+  }, [])
 
   useLayoutEffect(() => {
     const copies = cards.current.flatMap(card => {
@@ -54,50 +63,65 @@ export function WorksGallery() {
   useEffect(() => {
     const node = track.current!
     const reduced = matchMedia('(prefers-reduced-motion:reduce)')
-    let visible = false, hovered = false, focused = false, manual = false
-    let timer:ReturnType<typeof setTimeout>|undefined
-    const sync = () => {
-      clearTimeout(timer)
-      if (!visible || hovered || focused || manual || reduced.matches || document.hidden) return
-      timer = setTimeout(() => {
-        selectRef.current(1, true)
-        sync()
-      }, 4000)
+    let wasVisible = false
+    let hovered = matchMedia('(hover:hover)').matches && node.matches(':hover')
+    let pausedUntil = 0
+    let nextAt = performance.now() + 1000
+    // A single clock cannot be postponed by repeated intersection/focus events.
+    // Measure the actual stage, not the full-width wrapper's area ratio.
+    const tick = () => {
+      const stageNode = stage.current
+      if (!stageNode) return
+      const rect = stageNode.getBoundingClientRect()
+      const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0)
+      const visible = !document.hidden && visibleHeight >= Math.min(80, rect.height * .2)
+      const now = performance.now()
+      if (visible && !wasVisible) nextAt = Math.max(now + 1000, pausedUntil)
+      wasVisible = visible
+      node.dataset.autoplay = modalOpen.current || hovered || now < Math.max(pausedUntil, modalResumeAt.current) ? 'paused' : visible && !reduced.matches ? 'running' : 'idle'
+      if (!visible || modalOpen.current || hovered || now < Math.max(pausedUntil, modalResumeAt.current) || reduced.matches || stageNode.dataset.dragging || now < nextAt) return
+      selectRef.current(1, true)
+      nextAt = now + 2500
     }
-    const enter = (event:PointerEvent) => { if (event.pointerType === 'mouse') { hovered = true; sync() } }
-    const leave = (event:PointerEvent) => { if (event.pointerType === 'mouse') { hovered = false; sync() } }
-    const stop = () => { manual = true; sync() }
+    const stop = () => {
+      pausedUntil = performance.now() + 5000
+      nextAt = pausedUntil
+    }
+    const enter = (event:PointerEvent) => {
+      if (event.pointerType !== 'mouse') return
+      hovered = true
+      tick()
+    }
+    const leave = (event:PointerEvent) => {
+      if (event.pointerType !== 'mouse') return
+      hovered = false
+      nextAt = Math.max(performance.now() + 1000, pausedUntil)
+      tick()
+    }
+    const click = (event:Event) => {
+      if (performance.now() < suppressClick.current) return
+      stop()
+      tick()
+    }
     const wheel = (event:WheelEvent) => { if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) stop() }
     const key = (event:KeyboardEvent) => { if (['ArrowLeft','ArrowRight','Home','End','Enter',' '].includes(event.key)) stop() }
-    const focusIn = () => { focused = true; sync() }
-    const focusOut = (event:FocusEvent) => { focused = !!event.relatedTarget && node.contains(event.relatedTarget as Node); sync() }
-    const observer = new IntersectionObserver(entries => {
-      visible = entries[0].isIntersecting && entries[0].intersectionRatio >= .35
-      sync()
-    }, { threshold: [0,.35] })
-    observer.observe(node)
+    const timer = setInterval(tick, 100)
+    tick()
     node.addEventListener('pointerenter',enter)
     node.addEventListener('pointerleave',leave)
     node.addEventListener('pointerdown',stop,{capture:true})
-    node.addEventListener('click',stop,{capture:true})
+    node.addEventListener('click',click,{capture:true})
     node.addEventListener('wheel',wheel,{passive:true})
     node.addEventListener('keydown',key)
-    node.addEventListener('focusin',focusIn)
-    node.addEventListener('focusout',focusOut)
-    document.addEventListener('visibilitychange',sync)
-    reduced.addEventListener('change',sync)
     return () => {
-      clearTimeout(timer);observer.disconnect()
+      clearInterval(timer)
+      delete node.dataset.autoplay
       node.removeEventListener('pointerenter',enter)
       node.removeEventListener('pointerleave',leave)
       node.removeEventListener('pointerdown',stop,true)
-      node.removeEventListener('click',stop,true)
+      node.removeEventListener('click',click,true)
       node.removeEventListener('wheel',wheel)
       node.removeEventListener('keydown',key)
-      node.removeEventListener('focusin',focusIn)
-      node.removeEventListener('focusout',focusOut)
-      document.removeEventListener('visibilitychange',sync)
-      reduced.removeEventListener('change',sync)
     }
   }, [])
 
@@ -108,7 +132,7 @@ export function WorksGallery() {
     let frame=0, railFrame=0, disposed=false, paintedPosition=NaN
     let offset=0, position=0, railReady=false
     let motion:{target:number;velocity:number;lastTime:number;started:number;kind:'wheel'|'selection'|'release'}|null=null
-    let wheelTimer:ReturnType<typeof setTimeout>|undefined
+    const wheelGesture = createGalleryWheelGesture()
     let drag:{id:number;originX:number;originY:number;originPosition:number;lastX:number;lastTime:number;velocity:number;moved:boolean}|null=null
     let geometry={ cardWidth:0 }
     const full=()=>!reduced.matches
@@ -198,22 +222,16 @@ export function WorksGallery() {
       if(!full()||drag||event.ctrlKey||Math.abs(event.deltaX)<=Math.abs(event.deltaY)||!event.deltaX)return
       event.preventDefault()
       const unit=event.deltaMode===1?16:event.deltaMode===2?stageNode.clientWidth:1
-      offset+=event.deltaX*unit/(geometry.cardWidth+16)
+      const step = wheelGesture(event.deltaX * unit, performance.now())
+      if (!step) return
       const now=performance.now()
-      motion={target:offset,velocity:motion?.velocity??0,lastTime:now,started:now,kind:'wheel'}
-      clearTimeout(wheelTimer)
-      wheelTimer=setTimeout(()=>{
-        offset=Math.round(offset)
-        const time=performance.now()
-        motion={target:offset,velocity:motion?.velocity??0,lastTime:time,started:time,kind:'release'}
-        schedule()
-      },140)
+      offset=Math.round(offset)+step
+      motion={target:offset,velocity:0,lastTime:now,started:now,kind:'wheel'}
       schedule()
     }
     const resize=()=>{
       const changed=previousMode!==full()
       if(changed){
-        clearTimeout(wheelTimer)
         motion=null;drag=null;railReady=false
         delete stageNode.dataset.dragging
         previousMode=full()
@@ -226,7 +244,6 @@ export function WorksGallery() {
       schedule()
     }
     selectRef.current=(next,increment=false)=>{
-      clearTimeout(wheelTimer)
       if(full()){
         const destination=increment?Math.round(motion?.target??position)+next:Math.round(position)+relative(wrap(next)-wrap(Math.round(position)))
         const now=performance.now()
@@ -241,7 +258,6 @@ export function WorksGallery() {
     }
     const onPointerDown=(event:PointerEvent)=>{
       if(!full()||event.button!==0||(event.target as Element).closest('.concave-item-copy a'))return
-      clearTimeout(wheelTimer)
       offset=position;motion=null
       drag={id:event.pointerId,originX:event.clientX,originY:event.clientY,originPosition:position,lastX:event.clientX,lastTime:performance.now(),velocity:0,moved:false}
     }
@@ -259,7 +275,7 @@ export function WorksGallery() {
       const velocity=-(event.clientX-drag.lastX)/pitch/dt
       drag.velocity=drag.velocity*.65+velocity*.35
       drag.lastX=event.clientX;drag.lastTime=now
-      position=drag.originPosition-dx/pitch
+      position=drag.originPosition+clamp(-dx/pitch,-1,1)
       offset=position
       schedule()
     }
@@ -272,10 +288,10 @@ export function WorksGallery() {
       if(!completed.moved)return
       suppressClick.current=performance.now()+450
       const velocity=event.type==='pointercancel'||performance.now()-completed.lastTime>100?0:clamp(completed.velocity,-8,8)
-      const target=Math.round(position+clamp(velocity*.22,-2.2,2.2))
+      const target=galleryDragTarget(completed.originPosition,position,velocity,event.type==='pointercancel')
       offset=target
       const now=performance.now()
-      motion={target,velocity,lastTime:now,started:now,kind:'release'}
+      motion={target,velocity:clamp(velocity,-2,2),lastTime:now,started:now,kind:'release'}
       schedule()
     }
     const preventNativeDrag=(event:DragEvent)=>event.preventDefault()
@@ -319,7 +335,7 @@ export function WorksGallery() {
     desktop.addEventListener('change',resize);reduced.addEventListener('change',resize)
     measure();render()
     return()=>{
-      disposed=true;clearTimeout(wheelTimer);cancelAnimationFrame(frame);cancelAnimationFrame(railFrame);observer.disconnect()
+      disposed=true;cancelAnimationFrame(frame);cancelAnimationFrame(railFrame);observer.disconnect()
       window.removeEventListener('resize',resize)
       trackNode.removeEventListener('wheel',onHorizontalWheel,true)
       stageNode.removeEventListener('scroll',onRailScroll)
@@ -335,15 +351,13 @@ export function WorksGallery() {
   },[])
 
   const onSelect=(event:MouseEvent<HTMLElement>,i:number)=>{
-    const full=!matchMedia('(prefers-reduced-motion:reduce)').matches
-    if(full&&i!==indexRef.current){event.preventDefault();selectRef.current(i)}
-    else if(!worksGallery[i].slug){
-      event.preventDefault()
-      if(i!==indexRef.current)selectRef.current(i)
-    }
+    event.preventDefault()
+    if(performance.now()<suppressClick.current)return
+    modalOpen.current = true
+    setSelectedWork(i)
   }
   const active=worksGallery[index]
-  return <div ref={track} className="concave-track">
+  return <><div ref={track} className="concave-track">
     <div ref={sticky} className="concave-sticky">
       <div ref={stage} className="concave-stage" role="region" aria-roledescription="作品画廊" aria-label="作品展示：左右滑动或使用左右方向键循环切换，上下滚动浏览页面" tabIndex={0}
         onKeyDown={event=>{
@@ -355,17 +369,16 @@ export function WorksGallery() {
         }}>
         {railItems.map(({work,i,copy},railIndex)=>{
           const cover=site.media[work.mediaKey]?.cover
-          const href=caseHref(work.slug)
           const clone=copy!==1
-          const className=`concave-panel${i===index?' is-central':''}${clone?' is-clone':''}${site.media[work.mediaKey]?.inset?' has-inset-cover':''}`
+          const className=`concave-panel${i===index?' is-central':''}${clone?' is-clone':''}${site.media[work.mediaKey]?.inset?' has-inset-cover':''}${work.id==='more'?' has-folder-cover':''}`
           const style={'--project-accent':work.accent} as CSSProperties
           const content=<>
-            {cover?<img src={cover} alt={site.media[work.mediaKey]?.alt||`${work.title} 设计界面`} width={840} height={600} loading={i===0?'eager':'lazy'} draggable={false}/>:<div className={`concave-placeholder motif-${work.motif}`} aria-hidden="true"><div className="preview-frame"><div className="preview-toolbar"><i/><i/><i/></div><div className="preview-canvas"><span/><span/><span/></div></div></div>}
-            <span className="concave-card-cta" aria-hidden="true">查看项目 <ArrowUpRight size={16}/></span>
+            {work.id==='more'?<MoreWorksFolder />:cover?<img src={cover} alt={site.media[work.mediaKey]?.alt||`${work.title} 设计界面`} width={840} height={600} loading={i===0?'eager':'lazy'} draggable={false}/>:<div className={`concave-placeholder motif-${work.motif}`} aria-hidden="true"><div className="preview-frame"><div className="preview-toolbar"><i/><i/><i/></div><div className="preview-canvas"><span/><span/><span/></div></div></div>}
+            {work.id!=='more'&&<span className="concave-card-cta" aria-hidden="true">View project <ArrowUpRight size={16}/></span>}
           </>
           const ref=(node:HTMLElement|null)=>{railCards.current[railIndex]=node;if(!clone)cards.current[i]=node}
           return <div key={`${copy}-${work.id}`} ref={ref} className={className} style={style} aria-hidden={clone||undefined} role="group" aria-label={work.title}>
-            {href?<a href={href} className="concave-cover" tabIndex={clone?-1:undefined} aria-label={`查看 ${work.title}`} onClick={event=>onSelect(event,i)}>{content}</a>:<button type="button" className="concave-cover" tabIndex={clone?-1:undefined} aria-label="查看其他作品" onClick={event=>onSelect(event,i)}>{content}</button>}
+            <button type="button" className="concave-cover" tabIndex={clone?-1:undefined} aria-label={`查看 ${work.title}`} aria-haspopup="dialog" onClick={event=>onSelect(event,i)}>{content}</button>
             <div className="concave-item-copy" aria-hidden={i!==index||undefined}>
               <h3>{work.title}</h3>
               <p className="concave-description">{work.description}</p>
@@ -382,5 +395,5 @@ export function WorksGallery() {
         </div>
       </div>
     </div>
-  </div>
+  </div>{selectedWork !== null && <ProjectModal work={worksGallery[selectedWork]} onClose={closeProject} />}</>
 }

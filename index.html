@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="format-detection" content="telephone=no,email=no" />
     <meta name="theme-color" content="#100D0B" />
+    <style>
+      /* Hide each intro layer before the React bundle and external styles load. */
+      html.cinematic-intro:not(.intro-nav) .navbar-motion,
+      html.cinematic-intro:not(.intro-title) .cinematic-hero h1 span,
+      html.cinematic-intro:not(.intro-title) .cinematic-hero .hero-label,
+      html.cinematic-intro:not(.intro-subtitle) .cinematic-hero h2,
+      html.cinematic-intro:not(.intro-english) .cinematic-hero .hero-description,
+      html.cinematic-intro:not(.intro-cta) .cinematic-hero .hero-cta,
+      html.cinematic-intro:not(.intro-footer) .cinematic-hero .hero-footer {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
     <link rel="preload" href="/assets/hero-poster.jpg" as="image" />
     <meta name="description" content="闫伟平｜高级 UI/UX 设计师个人作品集，聚焦 AI 产品、Web SaaS 与移动体验。" />
     <meta property="og:title" content="闫伟平｜UI/UX 设计师作品集" />

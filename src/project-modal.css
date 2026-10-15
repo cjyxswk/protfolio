@@ -1,0 +1,55 @@
+.project-modal { position:fixed;inset:0;width:100%;max-width:none;height:100dvh;max-height:none;margin:0;padding:0;border:0;background:transparent;color:#F7F0EB;overflow:hidden; }
+.project-modal[open] { display:flex;flex-direction:column; }
+.project-modal::backdrop { background:rgba(12,12,16,.58);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px); }
+.project-modal-toolbar { flex:0 0 auto;display:flex;align-items:center;justify-content:flex-end;gap:20px;min-height:60px;padding:8px 20px 8px 28px;padding-top:max(8px,env(safe-area-inset-top));color:#B9A79B;font-size:13px;line-height:1.5; }
+.project-modal-close { display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;padding:0;border:0;border-radius:0;background:transparent;color:#E8E3DF;cursor:pointer;transition:color .2s; }
+.project-modal-close:hover { background:transparent;color:#FFFFFF; }
+.project-modal-close:focus-visible { outline:2px solid #FF985C;outline-offset:1px; }
+.project-modal-surface { flex:1;min-height:0;margin-inline:0;overflow:hidden;border:0;border-radius:24px 24px 0 0;background:#1D1916;box-shadow:0 -8px 48px rgba(0,0,0,.32); }
+.project-modal-preview { height:100%;overflow:auto;overscroll-behavior:contain;padding:clamp(24px,5vw,72px) max(24px,calc((100% - 1200px)/2)); }
+.project-modal-preview h1 { margin:0 0 16px;font-size:clamp(28px,4vw,52px);line-height:1.25; }
+.project-modal-title-row { display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:16px; }
+.project-modal-title-row h1 { margin:0; }
+.project-modal-tags { display:flex;flex-wrap:wrap;gap:10px;list-style:none;margin:0 0 20px;padding:0; }
+.project-modal-tags li { padding:8px 16px;border:1px solid rgba(185,145,116,.36);border-radius:999px;background:rgba(16,12,10,.2);color:#D9C9BD;font-size:13px;line-height:1.6;letter-spacing:normal; }
+.project-modal-live-link { display:inline-flex;align-items:center;gap:9px;flex-shrink:0;padding:12px 20px;border-radius:999px;background:#E62329;color:#fff;font-size:13px;font-weight:600;text-decoration:none; }
+.project-modal-live-link:hover { background:#FC353B; }
+.project-modal-live-link-painting { background:#16E6BC;color:#07201D; }
+.project-modal-live-link-painting:hover { background:#56F4D2; }
+.project-modal-live-link-gstory { background:#1D32FF;color:#FFFFFF; }
+.project-modal-live-link-gstory:hover { background:#4052FF; }
+.project-modal[data-project="gstory"] .project-modal-close:hover { color:#B5BEFF; }
+.project-modal[data-project="gstory"] .project-modal-close:focus-visible { outline-color:#8D9AFF; }
+.project-modal-live-link:focus-visible { outline:2px solid #fff;outline-offset:4px; }
+.project-modal-preview>p { margin:0 0 32px;color:#B9A79B;line-height:1.8; }
+.project-modal-cover { display:block;width:100%;height:auto;border-radius:16px; }
+.face-swap-matrix { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px; }
+.face-swap-product { min-width:0;padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:28px;background:#151311;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease; }
+.face-swap-product-image { aspect-ratio:3/2;overflow:hidden;border-radius:20px;background:#211D24; }
+.face-swap-product-image img { display:block;width:100%;height:100%;object-fit:cover;object-position:top;transform-origin:center top;transition:transform .65s cubic-bezier(.2,.7,.3,1); }
+.face-swap-product-footer { display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:20px 6px 10px; }
+.face-swap-product-footer h2 { margin:0;font-size:20px;line-height:1.4;font-weight:400;letter-spacing:normal;overflow-wrap:anywhere; }
+.face-swap-product-footer a { display:inline-flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;min-height:44px;padding:10px 14px;border:1px solid rgba(255,255,255,.14);color:#DED6D0;border-radius:999px;font-size:13px;font-weight:400;letter-spacing:normal;white-space:nowrap;text-decoration:none;transition:background .2s,color .2s; }
+.face-swap-product-footer a:hover { background:#ffffff0d;color:#C9B1FF; }
+.face-swap-product-footer a:focus-visible { outline:2px solid #C9B1FF;outline-offset:3px; }
+.face-swap-product-footer a svg { transition:transform .3s ease; }
+@media(hover:hover) and (pointer:fine) {
+ .face-swap-product:hover { transform:translateY(-5px);border-color:rgba(201,177,255,.32);box-shadow:0 14px 32px rgba(0,0,0,.2); }
+ .face-swap-product:hover .face-swap-product-image img { transform:scale(1.045); }
+ .face-swap-product:hover .face-swap-product-footer a svg { transform:translate(3px,-3px); }
+}
+.face-swap-product:focus-within { border-color:rgba(201,177,255,.32); }
+@media(prefers-reduced-motion:reduce) {
+ .face-swap-product,.face-swap-product-image img,.face-swap-product-footer a,.face-swap-product-footer a svg { transition:none; }
+ .face-swap-product:hover,.face-swap-product:hover .face-swap-product-image img,.face-swap-product:hover .face-swap-product-footer a svg { transform:none; }
+}
+@media(max-width:959px) { .face-swap-matrix { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:639px) { .face-swap-matrix { grid-template-columns:1fr; }.face-swap-product { padding:12px;border-radius:24px; }.face-swap-product-image { border-radius:16px; }.face-swap-product-footer { padding:16px 6px 6px; } }
+.automotive-project-pages { width:100%;overflow:hidden;border-radius:16px;background:#fff; }
+.automotive-project-pages img { display:block;width:100%;height:auto;aspect-ratio:16/9; }
+.project-modal-more { text-align:center; }
+.project-modal-folder { position:relative;max-width:640px;aspect-ratio:1.5;margin:24px auto;overflow:hidden;border-radius:20px;background:#171310; }
+.project-modal-more>ul { display:flex;flex-wrap:wrap;justify-content:center;gap:12px;list-style:none;padding:0;margin:24px auto; }
+.project-modal-more>ul li { padding:9px 18px;border:1px solid rgba(185,167,155,.24);border-radius:999px;color:#D9C9BD; }
+@media(max-width:767px) { .project-modal-toolbar { padding-inline:16px 12px;min-height:56px; } }
+@media(prefers-reduced-motion:reduce) { .project-modal-close { transition:none; } }

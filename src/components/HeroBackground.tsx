@@ -1,26 +1,32 @@
-import { useEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { site } from '../data/site'
 
-// Media-time thresholds calibrated to the source: head lift and greeting ~1s,
-// sustained wave at 1.3–3s. 0.75 playback rate gives a ~4s opening shot.
-const cues = [[.375, 'intro-nav'], [1.05, 'intro-title'], [1.8, 'intro-subtitle'], [1.935, 'intro-english'], [2.4, 'intro-cta'], [2.85, 'intro-footer']] as const
+// Reveal copy early in the opening shot while retaining the staggered sequence.
+// Thresholds use media time; playback remains at 0.75×.
+const titleCue = .35
+const cues = [[.15, 'intro-nav'], [titleCue, 'intro-title'], [.55, 'intro-subtitle'], [.65, 'intro-english'], [.8, 'intro-cta'], [1, 'intro-footer']] as const
 
 export function HeroBackground() {
   const ref = useRef<HTMLVideoElement>(null)
-  useEffect(() => {
+  useLayoutEffect(() => {
     const video = ref.current!
     const hero = video.closest('.hero')!
     const root = document.documentElement
     const preference = matchMedia('(prefers-reduced-motion: reduce)')
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
     const classes = cues.map(([,name])=>name)
+    root.classList.remove(...classes)
     root.classList.add('cinematic-intro')
+    hero.classList.remove('intro-static', 'intro-complete', 'video-fallback', 'video-ready')
+    video.currentTime = 0
     let fallbackTimer: ReturnType<typeof setTimeout>
     let checkTimer: ReturnType<typeof setTimeout> | undefined
     let emphasisTimer: ReturnType<typeof setTimeout> | undefined
     let emphasisScheduled = false
     let started = false
     let disposed = false
+    let failed = false
+    let revealFrame = 0
     const softenAfterReveal = () => {
       if (emphasisScheduled) return
       emphasisScheduled = true
@@ -33,19 +39,35 @@ export function HeroBackground() {
       root.classList.add(...classes)
       hero.classList.add('intro-static', 'intro-complete')
     }
-    const fallback = () => { video.pause(); hero.classList.add('video-fallback'); revealAll(); clearTimeout(fallbackTimer) }
+    const fallback = () => {
+      if (disposed || failed) return
+      failed = true
+      video.pause(); hero.classList.add('video-fallback'); revealAll()
+      clearTimeout(fallbackTimer); clearTimeout(checkTimer)
+    }
     const progress = () => {
+      if (disposed || failed) return
       for (const [time, name] of cues) if (video.currentTime >= time) root.classList.add(name)
-      if (video.currentTime >= 1.05) softenAfterReveal()
+      if (video.currentTime >= titleCue) softenAfterReveal()
+    }
+    const trackReveal = () => {
+      revealFrame = 0
+      if (disposed || failed || video.paused || video.ended) return
+      progress()
+      if (video.currentTime < cues[cues.length - 1][0]) revealFrame = requestAnimationFrame(trackReveal)
     }
     const playing = () => {
+      if (disposed || failed) { video.pause(); return }
       clearTimeout(checkTimer)
       if (!started) { started = true; clearTimeout(fallbackTimer) }
       hero.classList.add('video-ready')
       progress()
+      cancelAnimationFrame(revealFrame)
+      revealFrame = requestAnimationFrame(trackReveal)
     }
     const ended = () => { progress(); root.classList.add(...classes); softenAfterReveal(); video.pause() }
     const attempt = () => {
+      if (disposed || failed) return
       if (preference.matches || connection?.saveData) { fallback(); return }
       if (document.hidden) { video.pause(); return }
       if (video.getAttribute('src') !== site.heroVideo) video.src = site.heroVideo
@@ -55,7 +77,7 @@ export function HeroBackground() {
     }
     const waiting = () => {
       clearTimeout(checkTimer)
-      checkTimer = setTimeout(() => { if (!video.ended && !video.paused) revealAll() }, 1200)
+      checkTimer = setTimeout(() => { if (!video.ended && !video.paused) fallback() }, 4000)
     }
     const resume = () => {
       if (!preference.matches && !connection?.saveData) hero.classList.remove('video-fallback')
@@ -68,17 +90,19 @@ export function HeroBackground() {
     video.addEventListener('waiting', waiting)
     document.addEventListener('visibilitychange', attempt)
     preference.addEventListener('change', resume)
-    fallbackTimer = setTimeout(() => { if (!started) fallback() }, 1800)
+    fallbackTimer = setTimeout(() => { if (!started) fallback() }, 8000)
     if (!preference.matches && !connection?.saveData) attempt()
     else fallback()
     return () => {
       disposed = true
+      cancelAnimationFrame(revealFrame)
       clearTimeout(fallbackTimer); clearTimeout(checkTimer); clearTimeout(emphasisTimer)
       video.pause()
       video.removeEventListener('playing', playing); video.removeEventListener('timeupdate', progress)
       video.removeEventListener('ended', ended); video.removeEventListener('error', fallback); video.removeEventListener('waiting', waiting)
       document.removeEventListener('visibilitychange', attempt); preference.removeEventListener('change', resume)
-      root.classList.remove('cinematic-intro', ...classes)
+      // Keep the first-paint gate during StrictMode cleanup and remounts.
+      root.classList.remove(...classes)
       hero.classList.remove('intro-complete')
     }
   }, [])

@@ -19,7 +19,7 @@ html,body { overscroll-behavior-x:none; }
 .concave-panel.is-clone { display:none; }
 .concave-cover:focus-visible,.concave-stage:focus-visible { outline:2px solid var(--accent);outline-offset:-3px; }
 .concave-panel img { display:block;width:100%;height:100%;object-fit:cover; }
-.concave-panel.has-inset-cover .concave-cover { background:#100C0B; }
+.concave-panel .concave-cover { background:linear-gradient(150deg,rgba(255,255,255,.025),transparent 65%),#171310; }
 .concave-panel.has-inset-cover img { width:84%;height:84%;margin:0;position:absolute;left:8%;top:8%;object-fit:contain; }
 .concave-placeholder { position:relative;width:100%;height:100%;background:radial-gradient(ellipse at 75% 20%,color-mix(in srgb,var(--project-accent) 17%,transparent),transparent 70%),#1C1713;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:22px; }
 .preview-frame { position:absolute;top:16%;left:15%;width:70%;height:68%;border:1px solid color-mix(in srgb,var(--project-accent) 35%,transparent);border-radius:10px;background:rgba(16,12,11,.4);overflow:hidden; }
