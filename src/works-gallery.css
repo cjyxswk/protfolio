@@ -1,0 +1,105 @@
+/* The gallery scrolls with the page; only horizontal input moves the wall. */
+/* The transformed wall is not a native scroll box: suppress horizontal
+   browser history gestures at the root without affecting vertical scrolling. */
+html,body { overscroll-behavior-x:none; }
+.concave-track { --gallery-top:124px;--gallery-width:100vw;position:relative;width:var(--gallery-width);margin-inline:calc(50% - var(--gallery-width)/2); }
+.concave-sticky { position:relative;display:flex;flex-direction:column; }
+.concave-stage { position:relative;flex:none;height:min(calc(100svh - var(--gallery-top) - 64px),calc(var(--gallery-width)*.215/1.25 + 240px));min-height:260px;width:100%;perspective:calc(var(--gallery-width)*.65);perspective-origin:50% 50%;overflow-x:clip;overflow-y:visible;isolation:isolate;touch-action:pan-y;cursor:grab; }
+.concave-panel { position:absolute;top:calc(50% - 48px);left:50%;display:block;width:min(21.5%,calc((100svh - var(--gallery-top) - 300px)*1.25));aspect-ratio:1.25;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform;--copy-opacity:1; }
+.concave-cover { position:relative;display:block;width:100%;height:100%;padding:0;border:0;border-radius:20px;background:#1C1713;color:#F7F0EB;text-decoration:none;overflow:hidden;cursor:pointer;box-shadow:0 18px 38px rgba(0,0,0,.22); }
+.concave-stage[data-dragging="true"],.concave-stage[data-dragging="true"] .concave-cover { cursor:grabbing;user-select:none; }
+@supports (-webkit-box-reflect:below 0px) {
+  .concave-cover { -webkit-box-reflect:below 10px linear-gradient(transparent 60%,rgba(255,255,255,.055)); }
+}
+.concave-card-cta { position:absolute;right:18px;bottom:18px;display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border-radius:999px;background:rgba(16,12,11,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#F7F0EB;font-size:13px;font-weight:500;line-height:1.5;opacity:0;transform:translateY(6px);transition:opacity .22s ease,transform .22s ease;pointer-events:none; }
+.concave-cover:focus-visible .concave-card-cta { opacity:1;transform:none; }
+@media(hover:hover) and (pointer:fine) {
+  .concave-panel:hover .concave-card-cta { opacity:1;transform:none; }
+}
+.concave-panel.is-clone { display:none; }
+.concave-cover:focus-visible,.concave-stage:focus-visible { outline:2px solid var(--accent);outline-offset:-3px; }
+.concave-panel img { display:block;width:100%;height:100%;object-fit:cover; }
+.concave-panel.has-inset-cover .concave-cover { background:#100C0B; }
+.concave-panel.has-inset-cover img { width:84%;height:84%;margin:0;position:absolute;left:8%;top:8%;object-fit:contain; }
+.concave-placeholder { position:relative;width:100%;height:100%;background:radial-gradient(ellipse at 75% 20%,color-mix(in srgb,var(--project-accent) 17%,transparent),transparent 70%),#1C1713;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:22px; }
+.preview-frame { position:absolute;top:16%;left:15%;width:70%;height:68%;border:1px solid color-mix(in srgb,var(--project-accent) 35%,transparent);border-radius:10px;background:rgba(16,12,11,.4);overflow:hidden; }
+.preview-toolbar { display:flex;gap:4px;height:20px;align-items:center;padding:0 8px;border-bottom:1px solid rgba(185,167,155,.15); }
+.preview-toolbar i { width:3px;height:3px;border-radius:50%;background:var(--project-accent);opacity:.65; }
+.preview-canvas { display:grid;grid-template-columns:1.8fr 1fr;gap:6px;padding:12px;height:calc(100% - 20px); }
+.preview-canvas span { border-radius:5px;background:linear-gradient(140deg,color-mix(in srgb,var(--project-accent) 22%,transparent),rgba(185,167,155,.025));border:1px solid rgba(185,167,155,.1); }
+.preview-canvas span:first-child { grid-row:span 2; }
+.motif-portrait .preview-frame,.motif-app .preview-frame,.motif-image .preview-frame { left:33%;width:34%; }
+.motif-portrait .preview-canvas span:first-child { border-radius:40% 40% 12% 12%; }
+.concave-item-copy { position:absolute;top:calc(100% + 24px);left:calc((100% - min(90vw,760px))/2);width:min(90vw,760px);min-height:var(--gallery-copy-height,72px);text-align:center;opacity:var(--copy-opacity);transform:translateZ(2px);pointer-events:none; }
+.concave-panel.is-central .concave-item-copy { pointer-events:auto; }
+.concave-item-copy h3 { margin:0;color:#F7F0EB;font-size:clamp(18px,1.55vw,26px);font-weight:600;line-height:1.35;letter-spacing:0; }
+.concave-caption { position:relative;z-index:2;flex:0 0 auto;width:min(100%,1200px);margin-inline:auto;text-align:center;padding:0 20px;pointer-events:none; }
+.concave-status { position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }
+.concave-description { margin:12px 0 0;color:#B9A79B;font-size:14px;line-height:1.7; }
+.concave-controls { display:flex;align-items:center;justify-content:center;gap:32px;margin-top:24px; }
+.concave-controls button { display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;padding:0;border:0;border-radius:50%;background:#252322;color:#F7F0EB;cursor:pointer;pointer-events:auto;transition:background-color .22s ease,color .22s ease; }
+@media(hover:hover) and (pointer:fine) {
+  .concave-controls button:hover { background:#302923;color:var(--accent); }
+}
+.concave-controls button:focus-visible { outline:2px solid var(--accent);outline-offset:4px; }
+.concave-counter { min-width:78px;margin:0;color:#F7F0EB;font-size:17px;font-weight:500;line-height:1.5;font-variant-numeric:tabular-nums;letter-spacing:.02em;white-space:nowrap; }
+.concave-counter-total { color:rgba(185,175,164,.55); }
+@media(min-width:1024px) and (prefers-reduced-motion:no-preference) {
+  .concave-track { padding-top:clamp(40px,5vw,96px); }
+  .concave-caption { margin-top:-48px; }
+  .concave-controls { margin-top:12px; }
+}
+@media(min-width:1024px) and (max-height:650px) {
+  .concave-stage { height:min(calc(100svh - var(--gallery-top) - 76px),calc(var(--gallery-width)*.215/1.25 + 240px));min-height:120px; }
+  .concave-panel { width:min(21.5%,calc((100svh - var(--gallery-top) - 250px)*1.25));top:calc(50% - 38px); }
+  .concave-caption { margin-top:-16px; }
+  .concave-item-copy { top:calc(100% + 12px); }
+  .concave-description { margin:6px 0; }
+  .concave-controls { margin-top:14px; }
+  .concave-controls button { width:40px;height:40px;flex-basis:40px; }
+}
+/* Mobile keeps the same curved 3D wall, with one full central card and
+   perspective neighbours cropped at the edges. Touch drag uses pan-y. */
+@media(max-width:1023px) {
+  .concave-sticky { height:auto;min-height:0;display:block; }
+  .concave-stage { height:calc(min(58vw,360px)/1.25 + var(--gallery-copy-height,72px) + 56px);min-height:0;max-height:none;perspective:90vw;overflow-x:clip;overflow-y:visible; }
+  /* Anchor the cover to a fixed top inset rather than centring it in a stage
+     whose height changes with the caption. Keep 24px before the controls. */
+  .concave-panel { width:min(58%,360px);top:calc(min(58vw,360px)/2.5 + 16px); }
+  .concave-item-copy { top:calc(100% + 20px);width:min(90vw,760px);left:calc((100% - min(90vw,760px))/2); }
+  .concave-item-copy h3 { font-size:clamp(16px,2.6vw,22px); }
+  .concave-description { margin:8px 0 0;font-size:13px;line-height:1.6; }
+  .concave-caption { min-height:0;margin-top:-8px; }
+  .concave-controls { margin-top:12px;gap:24px; }
+  .concave-controls button { width:40px;height:40px;flex-basis:40px; }
+}
+/* Reduced motion alone falls back to a native, scrollbar-free snap rail. */
+@media(prefers-reduced-motion:reduce) {
+  .concave-track { height:auto; }
+  .concave-sticky { position:relative;top:auto;height:auto;min-height:0;display:block; }
+  .concave-stage { --rail-card-width:min(80vw,480px);display:flex;gap:16px;height:auto;max-height:none;min-height:0;padding:12px calc((100% - var(--rail-card-width))/2) 148px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:calc((100% - var(--rail-card-width))/2);perspective:none;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:auto;cursor:auto; }
+  .concave-stage::-webkit-scrollbar { display:none;width:0;height:0; }
+  .concave-panel { position:relative;top:auto;left:auto;flex:0 0 var(--rail-card-width);width:var(--rail-card-width);max-width:none;aspect-ratio:1.4;scroll-snap-align:center;will-change:auto;transform:none; }
+  .concave-panel.is-clone { display:block; }
+  .concave-cover { -webkit-box-reflect:unset; }
+  .concave-item-copy { left:0;width:100%;opacity:0;transform:none;transition:opacity .2s ease; }
+  .concave-panel.is-central .concave-item-copy { opacity:1; }
+  .concave-caption { min-height:0;margin-top:0; }
+  .concave-controls { margin-top:12px; }
+}
+@media(max-width:430px) {
+  .concave-cover { border-radius:18px; }
+  .concave-placeholder { padding:16px 12px; }
+  .concave-caption { padding-inline:0; }
+  .concave-item-copy h3 { font-size:16px; }
+  .concave-description { font-size:13px; }
+}
+@media(max-width:430px) and (prefers-reduced-motion:reduce) {
+  .concave-stage { --rail-card-width:88vw;gap:12px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .concave-item-copy { transition:none; }
+  .concave-panel { transition:none; }
+  .concave-controls button { transition:none; }
+  .concave-card-cta { transition:none; }
+}

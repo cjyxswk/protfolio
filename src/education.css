@@ -1,0 +1,26 @@
+.about-education {
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid var(--line);
+}
+.about-education h4 { margin:0 0 12px;font-size:16px;font-weight:400;line-height:1.5;color:var(--muted); }
+.education-entry { display:flex;align-items:baseline;justify-content:space-between;gap:16px 24px; }
+.education-info { min-width:0; }
+.education-separator { color:var(--muted);font-size:14px;line-height:1.6; }
+.about-education .education-school { margin:0 0 6px;font-size:20px;font-weight:600;line-height:1.5;color:var(--text); }
+.about-copy .education-details { display:flex;flex-wrap:wrap;gap:6px 16px;margin:0;padding:0;border:0; }
+.about-copy .education-details>div { display:flex;align-items:baseline;gap:10px;min-width:0; }
+.about-copy .education-details dt { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }
+.about-copy .education-details dd { margin:0;font-size:15px;font-weight:400;line-height:1.6;color:var(--muted); }
+.about-education .education-period { margin:0;flex-shrink:0;white-space:nowrap;font-size:14px;font-weight:400;line-height:1.6;color:var(--dim);font-variant-numeric:tabular-nums; }
+@media(max-width:767px) {
+  .about-education { margin-top:24px;padding-top:22px; }
+  .about-education .education-school { font-size:18px; }
+  .education-entry { flex-wrap:wrap;gap:10px 20px; }
+  .about-copy .education-details { gap:6px 14px; }
+  .about-copy .education-details dd { font-size:14px; }
+}
+@media(max-width:375px) {
+  .education-entry { display:block; }
+  .about-education .education-period { margin-top:10px; }
+}

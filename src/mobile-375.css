@@ -1,0 +1,4 @@
+/* Framer Motion owns transform on the animated card; use inset centering so it
+   stays inside the 375px safe area without relying on a CSS transform. */
+.portrait{left:0;right:0;margin-inline:auto;transform:none!important}
+@media(max-width:639px){.portrait{width:min(280px,calc(100vw - 48px));top:33%;bottom:auto}.ui-hero-visual{height:270px}.hero-bottom{padding-top:275px}}

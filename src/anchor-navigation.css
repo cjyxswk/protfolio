@@ -1,0 +1,5 @@
+/* JS is the single offset/smoothing owner. Never combine CSS offsets with it. */
+html { scroll-behavior:auto;scroll-padding:0; }
+[id] { scroll-margin:0; }
+.section-heading-anchor { display:flow-root;min-width:0;transform:none; }
+/* Keep reveal transforms on the inner content only. No anchor transform. */

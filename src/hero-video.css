@@ -1,0 +1,5 @@
+.hero-background { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.hero-background video { width:100%; height:100%; display:block; object-fit:cover; object-position:center; }
+.hero-video-shade { position:absolute; inset:0; background:rgba(16,13,11,.55); }
+.hero-content, .hero-footer { position:relative; z-index:1; }
+.hero-footer { position:absolute; }

@@ -1,0 +1,7 @@
+const visual=(label:string,color:string)=>`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><rect width="100%" height="100%" fill="${color}"/><path d="M0 180H1200M0 400H1200M300 0V800M800 0V800" stroke="#d5f26a" stroke-opacity=".26"/><text x="60" y="88" fill="#d5f26a" font-family="Arial" font-size="28">PROJECT CONCEPT VISUAL</text><text x="60" y="680" fill="#f5f3ee" font-family="Arial" font-size="64" font-weight="bold">${label}</text></svg>`)}`
+export const projects=[
+{name:'AI Image to Video',type:'AI Product / Web / 0→1',metric:'100K+ Daily Active Use',images:[visual('MATERIAL INPUT','#20251d'),visual('MODEL CONFIGURATION','#1c221c'),visual('RESULT MANAGEMENT','#172018')]},
+{name:'Face Swap Ecosystem',type:'AI Product / Web / Product System',metric:'Beauty AI → Pixelhaha → Face Swap AI → AI Face Swap Video → DeepSwap',images:[visual('IMAGE FACE SWAP','#24201d'),visual('VIDEO & MULTI-FACE','#211d22'),visual('PRODUCT ECOSYSTEM','#1d2424')]},
+{name:'Gstory',type:'AI Platform / Web / 0→1',metric:'Image, video and content tools in one scalable experience.',images:[visual('MULTI-TOOL ENTRY','#182524'),visual('CREATION WORKFLOW','#1d2420'),visual('RESULT EXPERIENCE','#1d2025')]},
+{name:'Automotive Digital Experience',type:'Mobile App / Redesign',metric:'+30% User Growth · +50% Retention · 5K → 30K DAU',images:[visual('CORE WORKFLOWS','#20231d'),visual('INFORMATION HIERARCHY','#1d2224'),visual('VISUAL SYSTEMS','#20211d')]}
+]

@@ -1,0 +1,65 @@
+:root {
+  --bg: #100D0B;
+  --alt: #100D0B;
+  --surface: #1C1713;
+  --text: #F5EFE7;
+  --accent: #FF792E;
+  --accent-hover: #FF8B49;
+  --accent-ink: #241409;
+  --muted: #B9AFA4;
+  --dim: #A2978C;
+  --line: rgba(176,141,111,.22);
+  --nav-bg: rgba(28,23,19,.94);
+  --nav-scrolled-bg: rgba(24,19,15,.98);
+}
+html, body, main, .hero, .works, .case-page { background: var(--bg); }
+.hero::before, .hero::after, .hero-noise { display: none; }
+.pill-nav { background: var(--surface); box-shadow: none; backdrop-filter: none; }
+.wordmark::before { background: none; border-color: var(--accent); }
+.nav-links a[aria-current="location"], .nav-links a:hover { color: var(--accent); background: none; }
+.identity-block, .work-placeholder, .work-card, .capability-card,
+.cap-1, .cap-2, .place-0, .place-1, .place-2, .place-3, .place-4 {
+  background: var(--surface); box-shadow: none;
+}
+.identity-block::before, .identity-block i, .placeholder-grid, .component-lines { display: none; }
+.cap-1 { color: var(--text); }
+.cap-1 > div:first-child, .cap-1 p, .card-route { color: var(--muted); }
+.card-route i { background: var(--line); }
+.work-meta { background: var(--surface); }
+.work-card:has(.work-cover) .work-meta { background: rgba(28,23,19,.96); }
+.work-card:hover { border-color: var(--accent); }
+.work-card:hover .placeholder-grid { transform: none; }
+.timeline i { background: var(--accent); box-shadow: none; }
+.timeline p { color: var(--muted); }
+.capability-diagram strong { border-color: var(--accent); color: var(--text); }
+.hero-label, .hero-description, .hero-footer { color: var(--muted); }
+.hero-label { display:flex;align-items:center;justify-content:center;gap:10px;font-weight:500; }
+.hero-status-dot { width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:var(--accent); }
+.contact h2 em { color: var(--text); }
+.button-primary, .button-outline {
+  display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+  min-width: 190px; padding: 17px 28px;
+  border: 1px solid var(--accent); border-radius: 999px;
+  color: var(--text); font-size: 16px; font-weight: 600; line-height: 1.5;
+  text-decoration: none; box-shadow: none;
+  transition: background-color .2s, border-color .2s;
+}
+.button-primary { background: var(--accent);color:var(--accent-ink); }
+.button-outline { background: transparent; }
+.button-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.button-outline:hover { background: rgba(255,121,46,.1); }
+.button-primary svg, .button-outline svg { width: 18px; height: 18px; }
+.hero-cta { padding: 17px 28px; min-width: 222px; }
+.nav-links.is-open { background: var(--surface); }
+a:focus-visible, button:focus-visible { outline-color: var(--accent); }
+/* Warm neutrals also cover inherited labels, icons and detail-page elements. */
+.hero h1,.section-title,.about-copy h3,.contact h2,.case-page h1 { color:var(--text); }
+.hero h2 { color:var(--muted); }
+.menu { color:var(--text); }
+.about-tags span,.about-copy dd,.work-meta>b { color:var(--text); }
+.identity-block small,.placeholder-top,.placeholder-copy span { color:var(--dim); }
+.capability-diagram span { border-color:var(--line);color:var(--muted); }
+.contact-action button:hover,footer a:hover,.more-work a:hover,
+.next-case:hover,.case-page header>a:last-child:hover { color:var(--accent); }
+::selection { background:rgba(255,121,46,.28);color:var(--text); }
+@media (prefers-reduced-motion: reduce) { .button-primary, .button-outline { transition: none; } }

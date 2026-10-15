@@ -1,0 +1,6 @@
+/* The portfolio name is longer than the original reference name. Keep its
+   oversized proportion while reserving enough width to display it in full. */
+.jack-title{overflow:visible;z-index:12}
+.jack-title h1{font-size:clamp(45px,11.5vw,220px);letter-spacing:.01em;word-spacing:.16em}
+.about3d h2,.services3d h2,.projects3d>h2{letter-spacing:.012em}
+.services3d h3,.stack-card h3{letter-spacing:.01em}

@@ -1,0 +1,32 @@
+/* Intro belongs to the button; idle cue belongs to its independent icon layer. */
+.hero-cta { position:relative;overflow:visible;isolation:isolate; }
+.specular-button__label { position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;gap:14px; }
+.specular-button__light { position:absolute;inset:-24px;width:calc(100% + 48px);height:calc(100% + 48px);pointer-events:none;z-index:0; }
+.specular-button[data-specular="fallback"] .specular-button__light { display:none; }
+.specular-button[data-specular="fallback"] { box-shadow:inset 0 0 0 1px rgba(255,231,204,.3); }
+.hero-cta-text,.hero-cta-icon { position:relative;z-index:1; }
+.hero-cta-icon { display:inline-flex;align-items:center;justify-content:center; }
+.intro-cta .hero-cta-icon {
+  animation:explore-arrow-cue 2.6s ease-in-out .6s infinite;
+}
+.hero-out-of-view .hero-cta-icon { animation-play-state:paused; }
+@keyframes explore-arrow-cue {
+  0%,60%,100% { transform:translateY(0); }
+  30% { transform:translateY(4px); }
+}
+.hero-cta:focus-visible .hero-cta-icon { animation:none;transform:none; }
+.hero-cta:focus-visible svg { transform:none; }
+.intro-cta .hero-cta:focus-visible {
+  transform:translateY(-3px);background:var(--accent-hover);
+}
+@media(hover:hover) {
+  .hero-cta:hover .hero-cta-icon { animation:none;transform:none; }
+}
+.intro-cta .hero-cta:active,.intro-static .hero-cta:active {
+  transform:translateY(0) scale(.98);transition-duration:.12s;
+}
+@media(prefers-reduced-motion:reduce) {
+  .intro-cta .hero-cta-icon,.hero-cta::after { animation:none!important; }
+  .hero-cta::after { display:none; }
+  .intro-cta .hero-cta:focus-visible,.intro-cta .hero-cta:active,.intro-static .hero-cta:active { transform:none; }
+}

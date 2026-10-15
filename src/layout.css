@@ -1,0 +1,94 @@
+:root {
+  --container-max:1200px;
+  --page-gutter:48px;
+  --container-width:min(calc(100% - var(--page-gutter) * 2),var(--container-max));
+  --section-space:140px;
+  --heading-space:48px;
+  --grid-gap:24px;
+}
+.page-container {
+  width:var(--container-width);max-width:none;min-width:0;
+  margin-inline:auto;box-sizing:border-box;
+}
+.header.page-container { width:var(--container-width);margin-inline:0; }
+.section.page-container,.contact.page-container,footer.page-container,.case-page .page-container {
+  max-width:none;padding-inline:0;margin-inline:auto;
+}
+/* Each section owns its leading gap so adjacent gaps never double up. */
+.section.page-container,.contact.page-container { padding-block:var(--section-space) 0; }
+.contact.page-container { padding-bottom:var(--section-space); }
+.section-heading { margin-bottom:var(--heading-space); }
+.timeline { margin-top:var(--section-space); }
+.work-grid,.works-heading,.more-work { max-width:none;margin-inline:0; }
+.work-grid,.capability-grid { gap:var(--grid-gap); }
+.more-work { gap:var(--grid-gap); }
+.contact.page-container { min-height:0; }
+footer.page-container { padding-block:24px; }
+.site-footer.page-container { display:flex;justify-content:space-between;align-items:center;flex-wrap:nowrap;gap:20px;padding-block:40px 28px;border-top:1px solid rgba(137,114,100,.4);color:#AA978C;font-size:13px;letter-spacing:.03em; }
+.site-footer.page-container>span { flex-basis:auto;order:0;font-size:inherit;white-space:nowrap; }
+.site-footer.page-container>a { color:#C7B5A9;font-size:15px;white-space:nowrap;text-decoration:none;transition:color .2s ease; }
+.site-footer.page-container>a:hover { color:var(--accent); }
+.cinematic-hero .hero-content.page-container { padding-inline:0;text-align:center; }
+.cinematic-hero h1,.cinematic-hero h2 { text-align:center;margin-inline:auto; }
+.hero-footer.page-container { left:0;right:0; }
+.hero-footer .hero-signature { max-width:none;flex-shrink:0;white-space:nowrap; }
+/* Fit the existing oversized title inside the shared width, not the viewport. */
+.cinematic-hero h1 { display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:.3em;font-size:clamp(58px,8.8vw,136px);white-space:normal; }
+.hero-content,.section-heading,.about-copy,.contact-action,.case-info>div { min-width:0; }
+.identity-block { width:100%;min-width:0; }
+.page-container img { max-width:100%; }
+.about-copy,.contact-action,.work-meta,.more-work,.case-page { overflow-wrap:anywhere; }
+.case-page { padding:0; }
+.case-page header.page-container { height:auto;min-height:76px;gap:20px; }
+.case-page section.page-container { padding-block:var(--section-space); }
+.case-page h1 { overflow-wrap:anywhere; }
+.case-summary { max-width:760px; }
+
+@media(max-width:1439px) and (min-width:1024px) {
+  .cinematic-hero h1 { font-size:clamp(58px,8vw,115px); }
+}
+@media(max-width:1023px) {
+  :root { --page-gutter:32px;--section-space:100px;--heading-space:40px; }
+  .diagram-wrap { flex-direction:column;align-items:flex-start; }
+  .contact.page-container { align-items:flex-start;gap:32px; }
+  .contact h2 { font-size:clamp(58px,8vw,100px); }
+  .contact-action { min-width:0;flex:1; }
+  .cinematic-hero h1 { font-size:clamp(58px,8vw,82px); }
+}
+@media(max-width:767px) {
+  :root { --page-gutter:20px;--section-space:72px;--heading-space:32px;--grid-gap:18px; }
+  .cinematic-hero h1 { flex-direction:column;gap:.2em;font-size:clamp(38px,11.8vw,74px); }
+  .hero h2,.hero-description { max-width:100%; }
+  .hero-footer { gap:16px; }
+  .hero-footer span:first-child { max-width:none;min-width:0;flex:1; }
+  .work-grid { grid-template-columns:minmax(0,1fr);grid-template-rows:none; }
+  .work-card { width:100%;min-height:0; }
+  .work-card .work-placeholder { aspect-ratio:1;min-height:0;height:auto;padding-bottom:0; }
+  .work-card .work-cover { aspect-ratio:4/3;height:auto; }
+  .work-meta { position:relative;padding:20px; }
+  .capability-grid { grid-template-columns:minmax(0,1fr); }
+  .capability-card { min-width:0; }
+  .contact.page-container { display:block; }
+  .contact-action { margin-top:32px; }
+  .timeline-label { flex-wrap:wrap;gap:12px; }
+  .about-copy dl { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .identity-block span { max-width:84%;font-size:clamp(38px,12vw,68px); }
+  .case-page header.page-container { flex-wrap:wrap;padding-block:16px; }
+  .case-page h1 { font-size:clamp(36px,11vw,64px); }
+  .case-page .work-placeholder { min-height:0;aspect-ratio:4/3; }
+  .case-page .placeholder-copy b { font-size:24px; }
+  footer.page-container { gap:12px; }
+  footer>span { flex-basis:100%;order:3; }
+}
+@media(max-width:375px) {
+  :root { --page-gutter:16px;--section-space:64px;--grid-gap:16px; }
+  .about-copy h3 { font-size:clamp(28px,9vw,34px); }
+  .capability-card { padding-inline:20px; }
+  .capability-card h3 { font-size:26px; }
+  .capability-card small { max-width:calc(100% - 32px); }
+  .contact h2 { font-size:52px; }
+}
+@media(max-width:767px) {
+  .site-footer.page-container { padding-block:28px 24px;gap:12px;font-size:11px; }
+  .site-footer.page-container>a { font-size:13px; }
+}

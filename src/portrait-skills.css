@@ -1,0 +1,30 @@
+.about-portrait { position:relative;isolation:isolate; }
+.portrait-black-background { position:absolute;inset:0;z-index:0;background:#000;pointer-events:none; }
+.about-portrait .about-portrait-photo { position:absolute;inset:0;z-index:2;pointer-events:none; }
+/* Foreground always uses the original photograph's pixels; only the generated
+   cutout's alpha is used to expose the skill layer behind the silhouette. */
+.has-portrait-mask .about-portrait-photo {
+  mask-image:var(--portrait-mask);-webkit-mask-image:var(--portrait-mask);
+  mask-mode:alpha;mask-size:contain;-webkit-mask-size:contain;
+  mask-position:center;-webkit-mask-position:center;
+  mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;
+}
+/* Touch devices show the same fixed skill positions without a hover trigger. */
+  .portrait-skills { position:absolute;inset:0;z-index:1;display:block;list-style:none;margin:0;padding:0;pointer-events:none; }
+  .portrait-skill { position:absolute;width:clamp(36px,3.4vw,52px);height:clamp(36px,3.4vw,52px);transform:translate(-50%,-50%); }
+  .portrait-skill-glass {
+    width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+    border:1px solid rgba(235,214,201,.19);border-radius:13px;
+    background:rgba(28,23,19,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    box-shadow:0 4px 14px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.04);
+    /* Motion owns translation, scale and opacity; the photo never animates. */
+    opacity:0;
+  }
+  .about-portrait .portrait-skill img { display:block;width:65%;height:65%;object-fit:contain;object-position:center;border-radius:5px; }
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  .portrait-skill-glass { background:#1C1713; }
+}
+@supports not ((mask-image:url("")) or (-webkit-mask-image:url(""))) {
+  /* Keep a static intact photo if foreground isolation is unsupported. */
+  .portrait-skills { display:none; }
+}

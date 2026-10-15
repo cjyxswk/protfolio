@@ -1,0 +1,2 @@
+import { ContactButton } from '../components/ContactButton'
+export function ContactSection(){return <section className="contact3d" id="contact"><p>CONTACT</p><h2>LET&apos;S BUILD<br/>SOMETHING USEFUL.</h2><div><span>Seeking UI/UX design opportunities</span><a href="mailto:1491846091@qq.com">1491846091@qq.com</a><span>Resume available on request</span><span>Shanghai · China</span></div><ContactButton/></section>}
