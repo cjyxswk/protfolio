@@ -2,7 +2,7 @@
 .portrait-black-background { position:absolute;inset:0;z-index:0;background:#000;pointer-events:none; }
 .about-portrait .about-portrait-photo { position:absolute;inset:0;z-index:2;pointer-events:none; }
 .about-portrait-block { min-width:0; }
-.portrait-explore-hint { margin:12px 0 0;text-align:center;color:#897C72;font-size:12px;font-weight:400;line-height:1.5;letter-spacing:.04em; }
+.portrait-explore-hint { position:absolute;inset:auto 0 0;z-index:3;margin:0;padding:32px 16px 16px;text-align:center;color:#D6CCC4;background:linear-gradient(transparent,rgba(0,0,0,.65));font-size:12px;font-weight:400;line-height:1.5;letter-spacing:.04em;pointer-events:none; }
 .about-portrait:focus-visible { outline:2px solid #FF974F;outline-offset:4px; }
 /* Foreground always uses the original photograph's pixels; only the generated
    cutout's alpha is used to expose the skill layer behind the silhouette. */

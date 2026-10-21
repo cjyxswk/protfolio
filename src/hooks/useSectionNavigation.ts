@@ -10,10 +10,16 @@ const normalize = (hash: string): SectionId | undefined => {
 /** One scroll owner for navigation, hero/footer anchors, deep links and history.
  * Heading wrappers never transform. CSS scroll offsets are explicitly disabled.
  */
-export function useSectionNavigation(navRef: RefObject<HTMLElement | null>) {
+export function useSectionNavigation(navRef: RefObject<HTMLElement | null>, enabled = true) {
   const [active, setActive] = useState('')
   const [scrolled, setScrolled] = useState(() => window.scrollY >= 60)
   useEffect(() => {
+    if (!enabled) {
+      const updateScroll = () => setScrolled(window.scrollY >= 60)
+      updateScroll()
+      window.addEventListener('scroll', updateScroll, { passive: true })
+      return () => window.removeEventListener('scroll', updateScroll)
+    }
     let frame = 0, settleFrame = 0, initialFrame = 0, historyFrame = 0
     let navigating: SectionId | undefined
     let disposed = false
@@ -137,6 +143,6 @@ export function useSectionNavigation(navRef: RefObject<HTMLElement | null>) {
       window.removeEventListener('touchstart', onUserInput)
       window.removeEventListener('keydown', onKey)
     }
-  }, [navRef])
+  }, [navRef, enabled])
   return { active, scrolled }
 }

@@ -1,0 +1,9 @@
+# Design goals: video creator
+
+Mode: built-in image generation, transparent background. Decorative fictional video creator, not the portfolio owner. Replaces the VR-themed decoration without changing project design deliverables.
+
+Saved asset: `public/assets/cases/ai-image-to-video/design-goals-filmmaker-v1.png`
+
+## Final prompt
+
+Use case: photorealistic-natural. Asset type: transparent portrait cutout for the right side of a video creation website hero. Primary request: a convincing editorial photograph of a fictional adult male European/American-looking video creator in his early thirties, light skin with real pores, slight freckles and natural short beard stubble, casually textured brown hair, wearing a plain charcoal cotton crew-neck shirt. He holds a compact professional digital CINEMA CAMERA with large lens, top handle, visible flip-out monitor and subtle red tally light, at chest height, angled slightly toward the left. Camera and hands must be clearly recognizable and anatomically correct; the equipment is an unbranded video production camera, not a futuristic gadget. His face is clearly visible above the camera, looking left with relaxed intent, no eyewear. Upper-body photograph, frame from top of head down to waist, include both shoulders, complete camera and hands with generous side margins. Natural soft daylight, restrained neutral color grading, real fabric, slight human imperfections, candid filmmaker editorial mood. Transparent alpha background, no environment, no halo, no glow, no border, no text or logos. Avoid: CGI, 3D render, waxy smooth skin, beauty-retouched model, neon green rim lighting, VR headset, sci-fi costume, fashion sunglasses, floating UI. The site uses a bright yellow-green background but DO NOT render any background; let the person remain naturally colored. This is illustrative decorative imagery, not a portrait of the portfolio owner.

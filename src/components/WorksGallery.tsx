@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react'
 import { worksGallery } from '../data/worksGallery'
 import { site } from '../data/site'
 import { MoreWorksFolder } from './MoreWorksFolder'
 import { createGalleryWheelGesture, galleryDragTarget } from '../utils/galleryGesture'
-import { ProjectModal } from './ProjectModal'
+import { CaseStudyModal } from './ai-face/CaseStudyModal'
 
 const clamp = (value:number, min=0, max=1) => Math.min(max, Math.max(min,value))
 const last = worksGallery.length - 1
@@ -27,16 +27,28 @@ export function WorksGallery() {
   const railCards = useRef<(HTMLElement|null)[]>([])
   const indexRef = useRef(0)
   const [index, setIndex] = useState(0)
+  const [faceOpen, setFaceOpen] = useState(false)
+  const openFace = useCallback(() => {
+    // Give the modal its real project URL so a reload opens the same case study.
+    if (window.location.pathname !== '/projects/ai-face') {
+      window.history.pushState({ ...window.history.state, aiFaceModal: true }, '', '/projects/ai-face')
+    }
+    setFaceOpen(true)
+  }, [])
+  const closeFace = useCallback(() => {
+    if (window.history.state?.aiFaceModal) window.history.back()
+    else {
+      window.history.replaceState(window.history.state, '', '/#works')
+      setFaceOpen(false)
+    }
+  }, [])
+  useEffect(() => {
+    const syncProject = () => setFaceOpen(window.location.pathname === '/projects/ai-face')
+    window.addEventListener('popstate', syncProject)
+    return () => window.removeEventListener('popstate', syncProject)
+  }, [])
   const selectRef = useRef<(next:number,increment?:boolean)=>void>(()=>{})
   const suppressClick = useRef(0)
-  const modalOpen = useRef(false)
-  const modalResumeAt = useRef(0)
-  const [selectedWork, setSelectedWork] = useState<number | null>(null)
-  const closeProject = useCallback(() => {
-    modalOpen.current = false
-    modalResumeAt.current = performance.now() + 5000
-    setSelectedWork(null)
-  }, [])
 
   useLayoutEffect(() => {
     const copies = cards.current.flatMap(card => {
@@ -74,12 +86,12 @@ export function WorksGallery() {
       if (!stageNode) return
       const rect = stageNode.getBoundingClientRect()
       const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0)
-      const visible = !document.hidden && visibleHeight >= Math.min(80, rect.height * .2)
+      const visible = !document.hidden && !document.querySelector('.af-modal[open]') && visibleHeight >= Math.min(80, rect.height * .2)
       const now = performance.now()
       if (visible && !wasVisible) nextAt = Math.max(now + 1000, pausedUntil)
       wasVisible = visible
-      node.dataset.autoplay = modalOpen.current || hovered || now < Math.max(pausedUntil, modalResumeAt.current) ? 'paused' : visible && !reduced.matches ? 'running' : 'idle'
-      if (!visible || modalOpen.current || hovered || now < Math.max(pausedUntil, modalResumeAt.current) || reduced.matches || stageNode.dataset.dragging || now < nextAt) return
+      node.dataset.autoplay = hovered || now < pausedUntil ? 'paused' : visible && !reduced.matches ? 'running' : 'idle'
+      if (!visible || hovered || now < pausedUntil || reduced.matches || stageNode.dataset.dragging || now < nextAt) return
       selectRef.current(1, true)
       nextAt = now + 2500
     }
@@ -350,12 +362,6 @@ export function WorksGallery() {
     }
   },[])
 
-  const onSelect=(event:MouseEvent<HTMLElement>,i:number)=>{
-    event.preventDefault()
-    if(performance.now()<suppressClick.current)return
-    modalOpen.current = true
-    setSelectedWork(i)
-  }
   const active=worksGallery[index]
   return <><div ref={track} className="concave-track">
     <div ref={sticky} className="concave-sticky">
@@ -378,7 +384,7 @@ export function WorksGallery() {
           </>
           const ref=(node:HTMLElement|null)=>{railCards.current[railIndex]=node;if(!clone)cards.current[i]=node}
           return <div key={`${copy}-${work.id}`} ref={ref} className={className} style={style} aria-hidden={clone||undefined} role="group" aria-label={work.title}>
-            <button type="button" className="concave-cover" tabIndex={clone?-1:undefined} aria-label={`查看 ${work.title}`} aria-haspopup="dialog" onClick={event=>onSelect(event,i)}>{content}</button>
+            <a className="concave-cover" href={`/projects/${work.slug}`} onClick={event => { if (work.id === 'face' && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && event.button === 0) { event.preventDefault(); openFace() } }} tabIndex={clone?-1:undefined} aria-label={`查看 ${work.title}`}>{content}</a>
             <div className="concave-item-copy" aria-hidden={i!==index||undefined}>
               <h3>{work.title}</h3>
               <p className="concave-description">{work.description}</p>
@@ -395,5 +401,5 @@ export function WorksGallery() {
         </div>
       </div>
     </div>
-  </div>{selectedWork !== null && <ProjectModal work={worksGallery[selectedWork]} onClose={closeProject} />}</>
+  </div>{faceOpen && <CaseStudyModal onClose={closeFace} />}</>
 }

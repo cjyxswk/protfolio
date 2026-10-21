@@ -1,0 +1,25 @@
+.contribution-orbit { position:relative;isolation:isolate;width:100%;max-width:1200px;aspect-ratio:1200/720;margin:36px auto 0; }
+#video-contribution .video-contribution-intro { text-align:center; }
+.contribution-orbit .project-constellation--section { inset:0;width:100%;height:100%;mask-image:radial-gradient(ellipse,#0004,transparent 75%); }
+.contribution-orbit-art { position:absolute;inset:6%;width:88%;height:88%;pointer-events:none; }
+.contribution-orbit-labels { position:relative;height:100%;margin:0;padding:0;list-style:none; }
+.contribution-orbit-labels li { position:absolute;width:22%;text-align:center; }
+.contribution-orbit-labels li:nth-child(1) { left:18%;top:2%; }
+.contribution-orbit-labels li:nth-child(2) { left:69%;top:0;width:24%; }
+.contribution-orbit-labels li:nth-child(3) { left:84%;top:45%;width:16%; }
+.contribution-orbit-labels li:nth-child(4) { left:65%;top:90%;width:30%; }
+.contribution-orbit-labels li:nth-child(5) { left:7%;top:90%; }
+.contribution-orbit-labels li:nth-child(6) { left:0;top:29%;width:20%; }
+.contribution-orbit-labels li>span { color:#96938F;font-size:13px;letter-spacing:.04em; }
+#video-contribution .contribution-orbit-labels h3 { margin:8px 0 0;color:#F5F1ED;font-size:clamp(17px,1.75vw,25px);line-height:1.5;font-weight:600; }
+.contribution-core-ribbons { transform-origin:530px 360px;animation:contribution-orbit-drift 36s linear infinite; }
+@keyframes contribution-orbit-drift { to { transform:rotate(360deg); } }
+@media(max-width:700px) {
+ .contribution-orbit { aspect-ratio:auto;margin-top:24px;padding-top:260px; }
+ .contribution-orbit-art { inset:0;width:100%;height:260px;object-fit:contain; }
+ .contribution-orbit-labels { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 16px;height:auto; }
+ .contribution-orbit-labels li:nth-child(n) { position:relative;inset:auto;width:auto; }
+ .contribution-orbit-labels li>span { font-size:10px; }
+ #video-contribution .contribution-orbit-labels h3 { margin-top:6px;font-size:16px; }
+}
+@media(prefers-reduced-motion:reduce) { .contribution-core-ribbons { animation:none; } }

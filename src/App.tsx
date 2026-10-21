@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { ArrowUpRight, Check, Copy } from 'lucide-react'
+import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
+import { ArrowLeft, ArrowUpRight, Check, Copy } from 'lucide-react'
 import { portfolio, projectBySlug } from './data/portfolio'
 import { site, labels } from './data/site'
 import { CinematicHero } from './components/CinematicHero'
@@ -12,6 +12,22 @@ import { Experience } from './components/Experience'
 import { WorksGallery } from './components/WorksGallery'
 import { CapabilityCards } from './components/CapabilityCards'
 import { ContactBackdrop } from './components/ContactBackdrop'
+import { VideoProjectContent } from './components/VideoProjectContent'
+import { ProjectConstellation } from './components/ProjectConstellation'
+import { ProjectContent } from './components/ProjectContent'
+import { worksGallery } from './data/worksGallery'
+import { AiFaceCaseStudy } from './components/ai-face/AiFaceCaseStudy'
+
+function ProjectPage({ title, children }: { title: string; children: ReactNode }) {
+  useEffect(() => {
+    const previousTitle = document.title
+    document.documentElement.classList.remove('cinematic-intro')
+    document.title = `${title}｜闫伟平作品集`
+    window.scrollTo(0, 0)
+    return () => { document.title = previousTitle }
+  }, [title])
+  return <div className="video-detail-page"><ProjectConstellation /><Header projectPage /><main className="video-detail-main"><a className="video-detail-back" href="/#works" onClick={() => { try { sessionStorage.setItem('portfolio-return-to-works', 'true') } catch { /* Storage may be unavailable in private contexts. */ } }}><ArrowLeft size={18} aria-hidden="true" />返回作品</a>{children}</main></div>
+}
 
 const capabilities = [
   ['01', '多产品 0–1 主导能力', 'Product', '从需求分析、体验设计到上线交付，推动多个产品落地。'],
@@ -22,8 +38,17 @@ const capabilities = [
 ]
 
 function useReveal() {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const nodes = document.querySelectorAll<HTMLElement>('[data-reveal]')
+    let returning = false
+    try { returning = location.pathname === '/' && location.hash === '#works' && sessionStorage.getItem('portfolio-return-to-works') === 'true' } catch { /* Fall back to normal reveals. */ }
+    if (returning) {
+      nodes.forEach(node => { node.style.transition = 'none'; node.dataset.reveal = 'shown' })
+      return
+    }
+    if (location.pathname === '/') {
+      try { sessionStorage.removeItem('portfolio-return-to-works') } catch { /* Storage is optional. */ }
+    }
     const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { (entry.target as HTMLElement).dataset.reveal = 'shown'; observer.unobserve(entry.target) } }), { threshold: .12 })
     nodes.forEach(node => observer.observe(node))
     return () => observer.disconnect()
@@ -116,4 +141,4 @@ function Contact() {
 
 function CasePage({ slug }: { slug: string }) { const project = projectBySlug(slug); if (!project) return <main className="case-page"><a href="/#works">← 返回作品</a><h1>项目暂未找到。</h1></main>; return <main className="case-page"><Container as="header"><a className="wordmark" href="/#home">闫伟平<span lang="en">UI/UX Designer</span></a><a href="/#works">← 返回作品</a></Container><Container as="section"><p className="case-meta">{project.category} / {project.stage} / {project.period.replace(/—/g, " — ")}</p><h1>{project.title}</h1><p className="case-summary">{project.summary}</p><ProjectMedia slug={project.slug} title={project.title} index={0} /><div className="case-info"><div><span lang="en">My Role / 我的职责</span><b>{project.role}</b></div><div><span lang="en">Overview / 项目背景</span><p>{project.scope}</p></div></div><div className="case-list"><h2><small lang="en">Process</small>设计重点</h2>{project.focus.map(item => <p key={item}>— {item}</p>)}</div>{project.results.length > 0 && <div className="case-list"><h2><small lang="en">Outcome</small>成果</h2>{project.results.map(item => <p key={item}>— {item}</p>)}</div>}{'subcases' in project && project.subcases?.map(item => <div className="case-list" key={item.name}><h2>{item.name}</h2><p>{item.period} · {item.role}</p><p>{item.scope}</p>{item.results.map(result => <p key={result}>{result}</p>)}</div>)}<div className="case-gallery">{site.media[slug]?.images?.map(src=><img key={src} src={src} alt={`${project.title} 代表界面`} loading="lazy" />)}</div><p className="pending">详细过程与真实界面图待补充后展示。</p><a className="next-case" href={`/projects/${portfolio.projects[(portfolio.projects.findIndex(item=>item.slug===slug)+1)%portfolio.projects.length].slug}`}>下一项目 <ArrowUpRight /></a></Container></main> }
 
-export default function App() { useReveal(); const slug = typeof window !== 'undefined' ? window.location.pathname.match(/^\/projects\/([^/]+)$/)?.[1] : undefined; if (slug) return <CasePage slug={slug} />; return <><Header /><main id="home"><CinematicHero /><About /><Works /><Capabilities /><div className="contact-closing"><ContactBackdrop /><Contact /><Container as="footer" className="site-footer"><span lang="en">© 2026 WEIPING YAN</span><a href="#home">返回顶部 ↑</a></Container></div></main></> }
+export default function App() { useReveal(); const slug = typeof window !== 'undefined' ? window.location.pathname.match(/^\/projects\/([^/]+)\/?$/)?.[1] : undefined; const work = worksGallery.find(item => item.slug === slug); if (slug === 'ai-face') return <AiFaceCaseStudy onClose={() => { window.location.href = '/#works' }} />; if (work) return <ProjectPage title={work.id === 'video' ? 'AI Image To Video' : work.title}>{work.id === 'video' ? <VideoProjectContent /> : <ProjectContent work={work} />}</ProjectPage>; if (slug) return <CasePage slug={slug} />; return <><Header /><main id="home"><CinematicHero /><About /><Works /><Capabilities /><div className="contact-closing"><ContactBackdrop /><Contact /><Container as="footer" className="site-footer"><span lang="en">© 2026 WEIPING YAN</span><a href="#home">返回顶部 ↑</a></Container></div></main></> }

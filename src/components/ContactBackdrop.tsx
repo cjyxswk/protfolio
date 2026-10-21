@@ -28,9 +28,9 @@ export function ContactBackdrop() {
             glow = Math.max(glow, Math.exp(-distance * distance / 11000) * (1 - age) ** 2)
           }
           const wave = .7 + .3 * Math.sin(x * .013 + y * .009)
-          ctx.fillStyle = `rgba(${glow > .04 ? '255,137,70' : '242,233,224'},${fade * (.24 * wave + glow * .65)})`
+          ctx.fillStyle = `rgba(${glow > .04 ? '255,137,70' : '242,233,224'},${fade * (.09 * wave + glow * .28)})`
           ctx.beginPath()
-          ctx.arc(x, y, 1.05 + glow * .65, 0, Math.PI * 2)
+          ctx.arc(x, y, .8 + glow * .35, 0, Math.PI * 2)
           ctx.fill()
         }
       }

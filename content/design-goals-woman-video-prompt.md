@@ -1,0 +1,9 @@
+# Design goals: female video result preview
+
+Mode: built-in image generation. Fictional illustrative frame, not an actual product-generated video. Playback icon and timeline are code-native decorative UI; the asset itself is a still image.
+
+Saved asset: `public/assets/cases/ai-image-to-video/design-goals-woman-video-v1.png`
+
+## Final prompt
+
+Use case: photorealistic-natural. Asset type: portrait-format cinematic video result thumbnail for an image-to-video portfolio web page. A fictional beautiful young ADULT European/American-looking woman, age 25-28, light skin with natural visible pores and subtle freckles, expressive hazel eyes, long loose dark blonde hair gently swept by wind. She is turning slightly toward the camera with a natural relaxed smile, caught in a candid moment of motion, not a stiff posed beauty headshot. Simple elegant dark charcoal top with sleeves, fully clothed, chest-up composition with comfortable headroom. Background: softly defocused sunlit coastal street with warm evening bokeh, soft sage-green foliage, believable photographic depth of field, warm natural skin tones, restrained cinematic color grading. Editorial lifestyle film still, authentic human texture, fine hair strands, soft real daylight, subtle motion in a few hair strands. Portrait 3:4 framing, woman's face centered with head and shoulders fully in frame, space below for a player timeline overlay that will be added later in HTML. No devices or equipment in her hands, no camera, no VR headset, no sci-fi, no futuristic costume, no CGI, no waxy retouching, no neon rim light. No text, no logos, no watermark, no UI or play buttons rendered into the image. Fully opaque scenic photograph, not transparent. This is a fictional illustrative result thumbnail, not an actual user portrait or a verified output from the product.

@@ -1,0 +1,25 @@
+@font-face {
+  font-family:'Case Montserrat';
+  src:url('/assets/montserrat-variable.ttf') format('truetype');
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+
+/* Case-study modules only; leave the shared portfolio navigation unchanged. */
+.video-project {
+  --video-font:'Case Montserrat','PingFang SC','Microsoft YaHei',sans-serif;
+  font-family:var(--video-font);
+}
+.video-project :is(button,input,textarea,select),
+.video-project .visual-color-usage {
+  font-family:var(--video-font);
+}
+
+/* Decorative English chapter titles follow the calligraphic reference. */
+.video-project .video-chapter-heading .video-chapter-script,
+.video-project .video-project-section .video-chapter-heading .video-chapter-script {
+  font-family:'Snell Roundhand','Brush Script MT','Segoe Script',cursive;
+  font-weight:400;
+  font-style:italic;
+}

@@ -1,0 +1,28 @@
+/* Fit the first screen to its available height, without scaling the page.
+   Keep the footer in flow so short windows can scroll instead of clipping it. */
+.cinematic-hero {
+  min-height:100svh;
+  grid-template-rows:1fr auto;
+  align-content:stretch;
+  gap:clamp(24px,4svh,56px);
+  padding-block:calc(var(--navbar-top) + var(--navbar-height) + clamp(24px,4svh,56px)) max(20px,env(safe-area-inset-bottom));
+}
+.cinematic-hero .hero-content.page-container { padding-block:0;align-self:center; }
+.cinematic-hero .hero-footer.page-container { position:relative;inset:auto;align-self:end; }
+.cinematic-hero h1 { flex-direction:column;flex-wrap:nowrap;font-size:clamp(32px,min(8.8vw,12svh),136px);margin-block:clamp(18px,3svh,34px) clamp(20px,4svh,42px); }
+.cinematic-hero h1>span { white-space:nowrap; }
+.cinematic-hero h2 { font-size:clamp(18px,min(2.6vw,3.8svh),36px); }
+.cinematic-hero .hero-description { margin-top:clamp(12px,2.5svh,26px); }
+.cinematic-hero .hero-cta { margin-top:clamp(24px,5svh,72px); }
+@media(max-width:767px) {
+  .cinematic-hero { gap:24px;padding-top:calc(var(--navbar-top) + var(--navbar-height) + 24px); }
+  .cinematic-hero h1 { font-size:clamp(26px,min(11.2vw,9svh),74px);gap:.15em;line-height:1.13; }
+  .cinematic-hero h2 { font-size:clamp(16px,2.8svh,20px); }
+  .cinematic-hero .hero-cta { margin-top:clamp(20px,4svh,40px);padding-block:16px; }
+  .cinematic-hero .hero-footer { flex-wrap:wrap;row-gap:8px; }
+}
+@media(max-height:600px) and (min-width:768px) {
+  .cinematic-hero { gap:20px;padding-top:calc(var(--navbar-top) + var(--navbar-height) + 20px); }
+  .cinematic-hero h1 { margin-block:14px 18px; }
+  .cinematic-hero .hero-cta { margin-top:20px;padding-block:14px; }
+}

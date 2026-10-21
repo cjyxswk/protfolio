@@ -35,7 +35,7 @@ export function CinematicHero() {
       <h1>{site.headline.map(part => <span key={part}>{part.includes('设计') ? <><em className="hero-title-accent">设计</em>{part.slice(2)}</> : part}</span>)}</h1>
       <h2>{site.subtitle}</h2>
       <p className="hero-description" lang="en">{site.description}</p>
-      <SpecularButton className="button-primary hero-cta" href="#works" onClick={event => {
+      <SpecularButton className="button-primary hero-cta" href="#about" onClick={event => {
         const now = performance.now()
         if (now - lastExplore.current < 650) event.preventDefault()
         else lastExplore.current = now

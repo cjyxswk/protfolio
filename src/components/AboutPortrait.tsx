@@ -53,5 +53,6 @@ export function AboutPortrait() {
         </motion.span>
       </li>)}
     </ul>
-  </div>{capable && <p className="portrait-explore-hint" id={`${skillsId}-hint`} lang="en">Hover to explore</p>}</div>
+    {capable && <p className="portrait-explore-hint" id={`${skillsId}-hint`} lang="en">Hover to explore</p>}
+  </div></div>
 }

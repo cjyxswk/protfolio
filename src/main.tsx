@@ -8,6 +8,7 @@ import './hero-video.css'
 import './cinematic.css'
 import './navbar.css'
 import './layout.css'
+import './hero-responsive.css'
 import './button-motion.css'
 import './education.css'
 import './about.css'
@@ -22,9 +23,9 @@ import './anchor-navigation.css'
 import './project-modal.css'
 import App from './App'
 
-// Retired standalone case URLs now resolve to the current works gallery.
-if (/^\/(?:projects\/ai-image-to-video\/?|case-studies\/ai-image-to-video\.html)$/.test(window.location.pathname)) {
-  window.history.replaceState(null, '', '/#works')
+// Preserve links to the retired static case while using the current detail page.
+if (window.location.pathname === '/case-studies/ai-image-to-video.html') {
+  window.history.replaceState(null, '', '/projects/ai-image-to-video')
 }
 
 createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>)
