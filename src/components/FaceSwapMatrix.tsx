@@ -1,4 +1,4 @@
-import { ArrowUpRight, ScanFace, LayoutGrid, Workflow, PanelsTopLeft, Compass, Upload, Sparkles, Eye, Download } from 'lucide-react'
+import { ArrowUpRight, ScanFace, LayoutGrid, Workflow, PanelsTopLeft, Compass, Upload, Sparkles, Eye, Download, Network, TrendingUp, CreditCard, Layers } from 'lucide-react'
 
 export const faceSwapProducts = [
   { name: 'Deep Swap AI', url: 'https://deepswapai.io/', image: '/assets/cases/face-swap/deep-swap-ai-cover-v2.png' },
@@ -18,16 +18,15 @@ const positioningRows = [
   ['核心入口', '图片 + 多工具', '图片换脸', '视频换脸'],
   ['功能结构', '多功能标签切换', '轻量上传优先', '视频操作优先'],
   ['重点体验', '工具覆盖', '快速生成', '视频处理流程'],
-  ['历史内容', '需进一步核实', 'Recent Results、素材', 'History'],
   ['商业化呈现', '免费试用引导', 'Credits、Pricing', 'Pricing'],
   ['设计侧重点', '功能统一', '低门槛与留存', '复杂状态管理'],
 ]
 
 const businessGoals = [
-  { title: '多站点业务布局', copy: '围绕不同搜索需求和创作场景，建立独立产品入口，扩展用户触达渠道。' },
-  { title: '提升生成转化', copy: '降低上传、素材选择及参数操作的理解成本，缩短从进入网站到首次生成的路径。' },
-  { title: '商业化承接', copy: '通过免费体验、Credits 和订阅权益设计，建立从体验到付费的产品路径。' },
-  { title: '设计资产复用', copy: '沉淀跨平台组件、交互状态和功能流程，在保证品牌差异的前提下提高迭代效率。' },
+  { title: '多站点业务布局', copy: '围绕不同搜索需求和创作场景，建立独立产品入口，扩展用户触达渠道。', Icon: Network },
+  { title: '提升生成转化', copy: '降低上传、素材选择及参数操作的理解成本，缩短从进入网站到首次生成的路径。', Icon: TrendingUp },
+  { title: '商业化承接', copy: '通过免费体验、Credits 和订阅权益设计，建立从体验到付费的产品路径。', Icon: CreditCard },
+  { title: '设计资产复用', copy: '沉淀跨平台组件、交互状态和功能流程，在保证品牌差异的前提下提高迭代效率。', Icon: Layers },
 ]
 
 export function FaceSwapMatrix() {
@@ -49,7 +48,7 @@ export function FaceSwapMatrix() {
     </section>
     <section id="face-swap-business-goals" className="face-swap-business-goals" aria-labelledby="face-swap-goals-title">
       <header className="face-swap-role-heading"><span>BUSINESS GOALS · 业务目标</span><h2 id="face-swap-goals-title">From Single Capability to Product Matrix</h2><p>从单一 AI 技术能力，向可扩展的多产品业务体系发展。</p></header>
-      <div className="face-swap-goals-grid">{businessGoals.map(({title,copy}, index) => <article key={title}><span className="face-swap-goal-number">0{index + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+      <div className="face-swap-goals-grid">{businessGoals.map(({title,copy,Icon}) => <article key={title}><Icon className="face-swap-goal-icon" size={32} strokeWidth={1.5} aria-hidden="true" /><h3>{title}</h3><p>{copy}</p></article>)}</div>
     </section>
     <section id="face-swap-positioning" className="face-swap-positioning" aria-labelledby="face-swap-positioning-title">
       <header className="face-swap-role-heading"><span>PRODUCT MATRIX</span><h2 id="face-swap-positioning-title">三个平台的真实定位</h2></header>

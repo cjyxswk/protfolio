@@ -1,4 +1,4 @@
-const categories = ['小程序', 'H5海报活动', '宣传视频', '线下物料', '动效设计', '更多']
+const categories = ['运营设计', '3D建模', 'H5活动海报', '小程序', '动效设计', '更多']
 
 export function MoreWorksFolder() {
   return <div className="more-works-art" aria-hidden="true">
