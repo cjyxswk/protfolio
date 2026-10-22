@@ -13,7 +13,7 @@ html,body { background:var(--bg); }
   .cinematic-hero.intro-complete .hero-background video,.intro-complete .hero-poster { filter:blur(4px); }
 }
 .cinematic-hero .hero-content { animation:none;transform:translate3d(0,var(--content-y,0px),0);opacity:var(--content-opacity,1); }
-.cinematic-hero h1 { font-family:var(--font-zh);font-size:clamp(58px,8.8vw,156px);font-weight:900;line-height:1.05;letter-spacing:-.055em;color:#FAFAFA; }
+.cinematic-hero h1 { font-family:var(--font-zh);font-size:clamp(58px,8.8vw,156px);font-weight:900;line-height:1.05;letter-spacing:normal;word-spacing:normal;color:#FAFAFA; }
 .cinematic-hero h1 .hero-title-accent { font:inherit;color:var(--accent);-webkit-text-fill-color:var(--accent); }
 .cinematic-hero h1 span { animation:none; }
 @supports ((background-clip:text) or (-webkit-background-clip:text)) {

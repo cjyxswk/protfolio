@@ -6,6 +6,7 @@ import { SectionHeading } from './SectionHeading'
 import { CaseStudyNav, navItems } from './CaseStudyNav'
 import { ProcessTimeline } from './ProcessTimeline'
 import { ImageGallery } from './ImageGallery'
+import { ProjectFooter } from '../ProjectFooter'
 import '../../ai-face-case.css'
 import '../../ai-face-reference.css'
 
@@ -34,31 +35,42 @@ export function AiFaceCaseStudy({ onClose }: { onClose: () => void }) {
     let frame = 0
     const updateActive = () => {
       frame = 0
+      // A closed dialog has zero-sized descendants; these are not chapter positions.
+      if (!ref.current?.getClientRects().length || (root && root.clientHeight === 0)) {
+        setActive(navItems[0][0])
+        return
+      }
       const boundary = (ref.current?.querySelector('[data-site-navbar]')?.getBoundingClientRect().bottom ?? 108) + 48
       let current: string = navItems[0][0]
       navItems.forEach(([id]) => {
         const node = ref.current?.querySelector(`#${id}`)
         if (node && node.getBoundingClientRect().top <= boundary) current = id
       })
-      const atBottom = root
-        ? root.scrollTop + root.clientHeight >= root.scrollHeight - 4
-        : window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4
+      const scrollTop = root ? root.scrollTop : window.scrollY
+      const scrollRange = root
+        ? root.scrollHeight - root.clientHeight
+        : document.documentElement.scrollHeight - window.innerHeight
+      const atBottom = scrollRange > 4 && scrollTop > 0 && scrollTop >= scrollRange - 4
       if (atBottom) current = 'af-end'
       setActive(current)
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(updateActive) }
     scrollTarget.addEventListener('scroll', schedule, { passive: true })
     window.addEventListener('resize', schedule)
-    updateActive()
+    const observer = new ResizeObserver(schedule)
+    if (ref.current) observer.observe(ref.current)
+    if (root) observer.observe(root)
+    schedule()
     return () => {
       document.title = oldTitle
       cancelAnimationFrame(frame)
+      observer.disconnect()
       scrollTarget.removeEventListener('scroll', schedule)
       window.removeEventListener('resize', schedule)
       window.removeEventListener('keydown', escape)
     }
   }, [onClose])
-  return <article ref={ref} className="af-case af-reference-layout" aria-label="AI Face 产品设计案例">
+  return <article id="af-case-top" ref={ref} className="af-case af-reference-layout" aria-label="AI Face 产品设计案例">
     <CaseStudyNav active={active} onClose={onClose} onJump={jump} />
     <main>
       <CaseStudyOpening onExplore={() => jump("af-architecture")} />
@@ -92,5 +104,6 @@ export function AiFaceCaseStudy({ onClose }: { onClose: () => void }) {
         ].map(({ number, title, copy }) => <li key={number}><p className="af-reflection-step"><span>{number}</span></p><h3>{title}</h3><p className="af-reflection-copy">{copy}</p></li>)}</ol>
       </section>
     </main>
+    <ProjectFooter topId="af-case-top" />
   </article>
 }

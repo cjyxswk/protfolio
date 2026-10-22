@@ -115,6 +115,7 @@
   .af-reference-layout #af-creation .af-creation-callout-line{display:none}
 }
 @media(max-width:767px){.af-reference-layout :is(#af-discovery,#af-creation,#af-feedback) .af-editorial-grid{grid-template-columns:minmax(0,1fr);gap:28px}}
+.af-modal:focus{outline:none}
 .af-reference-layout .af-chapter-rail{gap:clamp(0px,1vh,10px);max-height:calc(100svh - 32px)}
 .af-reference-layout .af-chapter-rail button{height:clamp(14px,2.6vh,24px);flex-shrink:0}
 .af-reference-layout .af-chapter-rail button>span{white-space:nowrap}
@@ -123,10 +124,9 @@
 .af-reference-layout .af-cover-devices{position:relative;height:820px;max-width:1000px;margin:48px auto -20px;z-index:2;isolation:isolate}
 .af-reference-layout .af-cover-devices:after{content:'';position:absolute;left:25%;bottom:43px;width:48%;height:18px;border-radius:50%;background:#0009;filter:blur(10px);z-index:0;pointer-events:none}
 .af-reference-layout .af-cover-phone{position:absolute;filter:drop-shadow(5px 14px 12px #0004)}
-.af-reference-layout .af-cover-phone .af-phone{max-width:none;width:100%;padding:5px;border:1px solid #62645E;border-radius:14% / 6.67%;box-shadow:inset 1px 1px 1px #D3D5CC55,inset -1px -1px 1px #000,1px 1px 0 #292C26;background:#080908;aspect-ratio:77.6 / 163;overflow:visible;isolation:isolate}
+.af-reference-layout .af-cover-phone .af-phone{max-width:none;width:100%}
 .af-reference-layout .af-device-screen{position:relative;width:100%;height:100%;border-radius:12.8% / 6.1%;overflow:hidden;background:#000}
 .af-reference-layout .af-cover-phone .af-phone img{display:block;width:100%;height:100%;aspect-ratio:750/1624;object-fit:contain;border-radius:0}
-.af-reference-layout .af-cover-phone .af-phone:after{content:'';position:absolute;inset:2px;border-radius:inherit;border:1px solid #FFFFFF12;pointer-events:none}
 .af-reference-layout .af-device-screen:after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,#FFFFFF0B 0%,#FFFFFF03 28%,transparent 45%,transparent 76%,#FFFFFF04 100%);box-shadow:inset 0 0 0 1px #FFFFFF0B}
 .af-reference-layout .af-cover-phone-back{width:270px;left:25%;top:150px;transform:rotate(-10deg);z-index:1}
 .af-reference-layout .af-cover-phone-front{width:270px;left:45%;top:0;transform:rotate(10deg);z-index:2}
@@ -142,6 +142,16 @@
 .af-reference-layout .af-cover-phone-back .af-device-key{right:auto;left:-14px}
 .af-reference-layout .af-device-island{position:absolute;top:1.35%;left:50%;width:25%;height:2.55%;transform:translateX(-50%);border-radius:999px;background:#020302;box-shadow:inset 0 0 1px 1px #1C1D1B}
 .af-reference-layout .af-device-island>i{position:absolute;right:9%;top:30%;width:8%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 35%,#283D54,#0B1423 60%,#050807);box-shadow:0 0 0 1px #141716}
+.af-reference-layout .af-phone.af-phone-device{--af-device-bezel:clamp(6px,.65vw,11px);aspect-ratio:77.6 / 163;padding:0;border:2px solid #BABCA9;border-radius:15% / 7.14%;background:#050605;overflow:visible;box-shadow:inset 0 0 0 1px #5B5E53,inset 0 0 0 3px #171A16,0 0 0 1px #34382F,0 18px 36px #0005;isolation:isolate}
+.af-reference-layout .af-phone-device .af-device-screen{position:absolute;inset:var(--af-device-bezel);width:auto;height:auto;border-radius:13% / 6.2%}
+.af-reference-layout .af-phone.af-phone-device img{position:absolute;inset:0;display:block;width:100%;height:100%;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:center;border-radius:0}
+.af-reference-layout .af-phone-device .af-device-island{top:.9%;width:29%;height:3.7%;box-shadow:inset 0 0 1px 1px #121510}
+.af-hardware-key{display:none}
+.af-reference-layout .af-phone-device .af-hardware-key{display:block;position:absolute;left:-5px;width:3px;border-radius:2px;background:linear-gradient(90deg,#515649,#D5D7C5,#777D6C);box-shadow:0 0 1px #CFD1C1}
+.af-reference-layout .af-hardware-action{top:17%;height:3.5%}
+.af-reference-layout .af-hardware-volume-up{top:24%;height:7%}
+.af-reference-layout .af-hardware-volume-down{top:33%;height:7%}
+.af-reference-layout .af-phone-device .af-hardware-power{left:auto;right:-5px;top:28%;height:12%}
 .af-reference-layout .af-cover-sticker{position:absolute;padding:10px 24px;border-radius:15px;font-size:19px;font-weight:600;white-space:nowrap;background:var(--af-gradient);color:#263017;z-index:0}
 .af-reference-layout .af-sticker-left{left:4%;top:245px;transform:none}
 .af-reference-layout .af-sticker-right{right:5%;top:335px;transform:none}
@@ -355,7 +365,6 @@
   .af-reference-layout .af-cover-subtitle .af-accent-wave{width:28px;height:12px}
   .af-reference-layout .af-cover-devices{height:520px;max-width:430px;margin:36px auto -10px}
   .af-reference-layout .af-cover-devices:after{left:18%;bottom:64px;width:68%;height:12px;filter:blur(7px)}
-  .af-reference-layout .af-cover-phone .af-phone{padding:3px;border-width:1px;box-shadow:inset 1px 1px 1px #D3D5CC40,inset -1px -1px 1px #000}
   .af-reference-layout .af-cover-phone .af-phone img{border-radius:0}
   .af-reference-layout .af-cover-phone-back{width:43%;left:20%;top:95px;transform:rotate(-10deg)}
   .af-reference-layout .af-cover-phone-front{width:43%;left:45%;top:0;transform:rotate(10deg)}

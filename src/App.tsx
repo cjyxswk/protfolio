@@ -17,6 +17,7 @@ import { ProjectConstellation } from './components/ProjectConstellation'
 import { ProjectContent } from './components/ProjectContent'
 import { worksGallery } from './data/worksGallery'
 import { AiFaceCaseStudy } from './components/ai-face/AiFaceCaseStudy'
+import { ProjectFooter } from './components/ProjectFooter'
 
 function ProjectPage({ title, children }: { title: string; children: ReactNode }) {
   useEffect(() => {
@@ -26,7 +27,7 @@ function ProjectPage({ title, children }: { title: string; children: ReactNode }
     window.scrollTo(0, 0)
     return () => { document.title = previousTitle }
   }, [title])
-  return <div className="video-detail-page"><ProjectConstellation /><Header projectPage /><main className="video-detail-main"><a className="video-detail-back" href="/#works" onClick={() => { try { sessionStorage.setItem('portfolio-return-to-works', 'true') } catch { /* Storage may be unavailable in private contexts. */ } }}><ArrowLeft size={18} aria-hidden="true" />返回作品</a>{children}</main></div>
+  return <div id="project-top" className="video-detail-page"><ProjectConstellation /><Header projectPage /><main className="video-detail-main"><a className="video-detail-back" href="/#works" onClick={() => { try { sessionStorage.setItem('portfolio-return-to-works', 'true') } catch { /* Storage may be unavailable in private contexts. */ } }}><ArrowLeft size={18} aria-hidden="true" />返回作品</a>{children}<ProjectFooter /></main></div>
 }
 
 const capabilities = [

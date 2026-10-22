@@ -10,6 +10,7 @@ export function CaseStudyModal({ onClose }: { onClose: () => void }) {
     const previous = { position: body.style.position, top: body.style.top, width: body.style.width, overflow: body.style.overflow }
     body.style.position = 'fixed'; body.style.top = `-${y}px`; body.style.width = '100%'; body.style.overflow = 'hidden'
     ref.current?.showModal()
+    ref.current?.focus({ preventScroll: true })
     return () => {
       Object.assign(body.style, previous)
       const previousBehavior = document.documentElement.style.scrollBehavior
@@ -18,5 +19,5 @@ export function CaseStudyModal({ onClose }: { onClose: () => void }) {
       document.documentElement.style.scrollBehavior = previousBehavior
     }
   }, [])
-  return createPortal(<dialog ref={ref} className="af-modal" aria-label="AI Face 完整产品设计案例" onCancel={event => { if (event.target !== event.currentTarget) return; event.preventDefault(); onClose() }}><div className="af-case-scroll"><AiFaceCaseStudy onClose={onClose} /></div></dialog>, document.body)
+  return createPortal(<dialog ref={ref} tabIndex={-1} autoFocus className="af-modal" aria-label="AI Face 完整产品设计案例" onCancel={event => { if (event.target !== event.currentTarget) return; event.preventDefault(); onClose() }}><div className="af-case-scroll"><AiFaceCaseStudy onClose={onClose} /></div></dialog>, document.body)
 }
